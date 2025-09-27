@@ -60,14 +60,18 @@ func crawl(c *crawler) {
 
 func main() {
 
-	c := crawler{
-		url:        "https://google.com",
-		urlStatus:  "pending",
-		visited:    false,
-		rawHtml:    "",
-		DNS:        "example.com",
-		parsedHtml: &html.Node{},
-	}
+	urls := []string{"https://google.com", "https://example.com"}
 
-	crawl(&c)
+	for _, url := range urls {
+		c := crawler{
+			url:        url,
+			urlStatus:  "pending",
+			visited:    false,
+			rawHtml:    "",
+			DNS:        "example.com",
+			parsedHtml: &html.Node{},
+		}
+
+		crawl(&c)
+	}
 }
