@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"html"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"golang.org/x/net/html"
 )
@@ -16,11 +16,9 @@ type crawler struct {
 	rawHtml    string
 	parsedHtml *html.Node
 	DNS        string
-	queue      []string
 }
 
 func fetchURL(c *crawler) {
-	// Fetch the URL and update the crawler's status and raw HTML
 	resp, err := http.Get(c.url)
 	if err != nil {
 		c.urlStatus = "error"
@@ -37,32 +35,39 @@ func fetchURL(c *crawler) {
 	c.DNS = resp.Request.URL.Hostname()
 }
 
-func parse(c *crawler) {
-	// Parse the raw HTML and update the crawler's status and parsed HTML
-	// Implement parsing logic here
-	c.parsedHtml, err := html.Parse(c.rawHtml)
+func parse(c *crawler) error {
+	var err error
+	c.parsedHtml, err = html.Parse(strings.NewReader(c.rawHtml))
 	if err != nil {
 		c.urlStatus = "error"
-		return
+		return err
 	}
-
+	return nil
 }
 
 func crawl(c *crawler) {
 	// Fetch the URL and parse the HTML
+	fetchURL(c)
+	parse(c)
+	fmt.Println("URL:", c.url)
+	fmt.Println("DNS:", c.DNS)
+	fmt.Println("Visited:", c.visited)
+	fmt.Println("Status:", c.urlStatus)
+	fmt.Println("Raw HTML:", c.rawHtml)
+	fmt.Println("Parsed HTML:", c.parsedHtml)
 
 }
 
 func main() {
-	fmt.Println("Hello, World!")
 
 	c := crawler{
-		url:       "https://example.com",
-		urlStatus: "pending",
-		visited:   false,
-		rawHtml:   "",
-		DNS:       "example.com",
-		queue:     []string{},
+		url:        "https://google.com",
+		urlStatus:  "pending",
+		visited:    false,
+		rawHtml:    "",
+		DNS:        "example.com",
+		parsedHtml: &html.Node{},
 	}
-	fmt.Println(c)
+
+	crawl(&c)
 }
