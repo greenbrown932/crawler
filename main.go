@@ -68,7 +68,7 @@ func main() {
 			urlStatus:  "pending",
 			visited:    false,
 			rawHtml:    "",
-			DNS:        "example.com",
+			DNS:        "",
 			parsedHtml: &html.Node{},
 		}
 
